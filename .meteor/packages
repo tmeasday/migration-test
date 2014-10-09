@@ -7,4 +7,5 @@ meteor-platform
 autopublish
 insecure
 mrt:collection-hooks@=0.6.3
+percolatestudio:percolatestudio-migrations
 

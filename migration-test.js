@@ -23,42 +23,49 @@ if (Meteor.isServer) {
       Log('Completed updating ' + + i + ' - ' + count + ' ' + name + 's');
     }
     
-    onePerRecord(Flips.find({lastActivity: {$exists: false}}), 'flip', function(flip) {
-      
-      var lastResponse = Responses.findOne({flipId: flip._id}, {sort: {createdAt: -1}});
-      
-      var selector = {responseId: {$in: Responses.find({flipId: flip._id}).map(function(r) {return r._id;})}};
-      var lastComment = Comments.findOne(selector, {sort: {createdAt: -1}});
+    Migrations.add({
+      name: 'Set flip.lastActivity',
+      version: 26,
+      up: function() {
+  
+        onePerRecord(Flips.find({lastActivity: {$exists: false}}), 'flip', function(flip) {
+    
+          var lastResponse = Responses.findOne({flipId: flip._id}, {sort: {createdAt: -1}});
+    
+          var selector = {responseId: {$in: Responses.find({flipId: flip._id}).map(function(r) {return r._id;})}};
+          var lastComment = Comments.findOne(selector, {sort: {createdAt: -1}});
 
-      var activity;
-      if (lastResponse && (! lastComment || lastResponse.createdAt > lastComment.createdAt)) {
-        activity = {
-          type: 'added-response',
-          id: lastResponse._id,
-          text: lastResponse.body,
-          userId: lastResponse.studentId,
-          at: lastResponse.createdAt
-        }
-      } else if (lastComment) {
-        activity = {
-          type: 'added-comment',
-          id: lastComment._id,
-          text: lastComment.body,
-          userId: lastComment.commenterId,
-          at: lastComment.createdAt
-        }
-      } else {
-        activity = {
-          type: 'added-flip',
-          id: flip._id,
-          text: flip.title,
-          userId: flip.teacherId,
-          at: flip.createdAt
-        }
+          var activity;
+          if (lastResponse && (! lastComment || lastResponse.createdAt > lastComment.createdAt)) {
+            activity = {
+              type: 'added-response',
+              id: lastResponse._id,
+              text: lastResponse.body,
+              userId: lastResponse.studentId,
+              at: lastResponse.createdAt
+            }
+          } else if (lastComment) {
+            activity = {
+              type: 'added-comment',
+              id: lastComment._id,
+              text: lastComment.body,
+              userId: lastComment.commenterId,
+              at: lastComment.createdAt
+            }
+          } else {
+            activity = {
+              type: 'added-flip',
+              id: flip._id,
+              text: flip.title,
+              userId: flip.teacherId,
+              at: flip.createdAt
+            }
+          }
+
+          Flips.update({_id: flip._id, lastActivity: {$exists: false}},
+            {$set: {lastActivity: activity}});
+        });
       }
-
-      Flips.update({_id: flip._id, lastActivity: {$exists: false}},
-        {$set: {lastActivity: activity}});
     });
   });
 }
