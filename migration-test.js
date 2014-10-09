@@ -68,6 +68,7 @@ if (Meteor.isServer) {
   });
   
   Meteor.startup(function () {
+    console.log("RUNNING MIGRATION FROM WITHIN THE APP");
     Migrations.migrateTo('1,rerun');
   });
 }
