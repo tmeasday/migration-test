@@ -25,7 +25,7 @@ if (Meteor.isServer) {
     
     Migrations.add({
       name: 'Set flip.lastActivity',
-      version: 26,
+      version: 1,
       up: function() {
   
         onePerRecord(Flips.find({lastActivity: {$exists: false}}), 'flip', function(flip) {
