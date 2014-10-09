@@ -66,4 +66,8 @@ if (Meteor.isServer) {
       });
     }
   });
+  
+  Meteor.startup(function () {
+    Migrations.migrateTo('1,rerun');
+  });
 }
