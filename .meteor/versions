@@ -33,7 +33,6 @@ mobile-status-bar@1.0.0
 mongo@1.0.6
 observe-sequence@1.0.2
 ordered-dict@1.0.0
-percolatestudio:percolatestudio-migrations@0.7.1
 random@1.0.0
 reactive-dict@1.0.3
 reactive-var@1.0.2
