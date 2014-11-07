@@ -3,7 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 // with this timeout the loop reports a single document
 var TIMEOUT = 15 * 60 * 1000;
 // with this timeout the loop reports 10 documents
-var TIMEOUT = 0;
+// var TIMEOUT = 0;
 
 MongoClient.connect("mongodb://localhost:3001/meteor", function(err, db) {
   if (err)
@@ -17,7 +17,7 @@ MongoClient.connect("mongodb://localhost:3001/meteor", function(err, db) {
     cursor.nextObject(function(error, doc) {
       if (err)
         return console.log(err);
-    
+
       if (doc) {
         i += 1;
         console.log(i, 'got a doc');
@@ -26,7 +26,7 @@ MongoClient.connect("mongodb://localhost:3001/meteor", function(err, db) {
         }, TIMEOUT);
       } else {
         console.log('done!');
-        process.exit();
+        db.close();
       }
     })
   }
